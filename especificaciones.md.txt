@@ -1,0 +1,66 @@
+# Especificaciones Técnicas - MatchSport (MVP Local)
+
+## 1. Visión General del Proyecto
+MatchSport es una aplicación de escritorio local diseñada para conectar a deportistas del mismo nivel y zona. Este MVP (Producto Mínimo Viable) se centra exclusivamente en la lógica principal: creación de perfiles, creación de partidos y un algoritmo de emparejamiento, sin incluir monetización ni dependencias web externas.
+
+## 2. Stack Tecnológico
+*   **Lenguaje:** Python 3.9+
+*   **Interfaz Gráfica (GUI):** `tkinter` (o `customtkinter` para un diseño más moderno).
+*   **Base de Datos:** `sqlite3` (Módulo estándar de Python, archivo local `matchsport.db`).
+*   **Patrón de Diseño:** Spec-Driven Development. Separación de lógica de base de datos (`database.py`) y lógica de interfaz (`main.py`).
+
+## 3. Esquema de Base de Datos (SQLite)
+Se requiere la creación de dos tablas relacionales.
+
+### Tabla: `usuarios`
+*   `id` (INTEGER, PRIMARY KEY, AUTOINCREMENT)
+*   `nombre` (TEXT, NOT NULL)
+*   `deportes_favoritos` (TEXT, NOT NULL) - Almacenado como string separado por comas.
+*   `nivel` (TEXT, NOT NULL) - Opciones: "Principiante", "Intermedio", "Experto".
+*   `zona_juego` (TEXT, NOT NULL) - Opciones: "Norte", "Sur", "Centro".
+
+### Tabla: `partidos`
+*   `id` (INTEGER, PRIMARY KEY, AUTOINCREMENT)
+*   `creador_id` (INTEGER, FOREIGN KEY referenciando a `usuarios.id`)
+*   `deporte` (TEXT, NOT NULL)
+*   `nivel_requerido` (TEXT, NOT NULL)
+*   `zona` (TEXT, NOT NULL)
+*   `plazas_disponibles` (INTEGER, NOT NULL)
+
+## 4. Diseño de la Interfaz de Usuario (UI)
+La ventana principal debe dividirse en dos paneles principales (izquierdo y derecho) y una barra de estado inferior.
+
+*   **Panel Izquierdo: "Crear Perfil"**
+    *   Campo de texto para "Nombre".
+    *   Listbox de selección múltiple para "Deportes favoritos" (Pádel, Tenis, Fútbol, Running).
+    *   Combobox (desplegable) para "Nivel" (Principiante, Intermedio, Experto).
+    *   Combobox para "Zona de juego" (Norte, Sur, Centro).
+    *   Botón de acción: "Guardar Perfil". Al hacer clic, debe insertar los datos en SQLite y actualizar el estado de la aplicación.
+
+*   **Panel Derecho: "Partidos Disponibles"**
+    *   Un área de visualización (Treeview o Frame con scroll) que muestre los partidos que coincidan con el perfil del usuario activo.
+    *   Cada elemento debe mostrar: Deporte - Nivel - Zona (Plazas disponibles).
+    *   Cada elemento debe tener un botón "Unirse al Partido" (para el MVP, esto puede simplemente restar 1 a las `plazas_disponibles` en la BD y actualizar la vista).
+
+*   **Barra Inferior:**
+    *   Etiqueta de texto de estado (Ej: "Conectado a la base de datos local (SQLite)").
+
+## 5. Lógica del Motor de Emparejamiento (Match Algorithm)
+La función principal de filtrado en `database.py` debe recuperar los partidos disponibles basándose en el usuario actual. Las condiciones (Cláusulas WHERE) son:
+1.  `partidos.deporte` debe estar incluido en `usuarios.deportes_favoritos`.
+2.  `partidos.nivel_requerido` == `usuarios.nivel`.
+3.  `partidos.zona` == `usuarios.zona_juego`.
+4.  `partidos.plazas_disponibles` > 0.
+
+## 6. Fases de Desarrollo Sugeridas
+1.  **Setup de Base de Datos:** Crear `database.py` con las funciones `init_db()`, `crear_usuario(...)`, `crear_partido(...)` y `buscar_partidos(...)`. Escribir un script de prueba que genere datos *mock* (usuarios y partidos de prueba).
+2.  **Desarrollo de GUI:** Crear `main.py` y diseñar el layout con Tkinter (Paneles, Labels, Entradas, Botones). No conectar la BD aún.
+3.  **Integración:** Conectar el botón "Guardar Perfil" a `crear_usuario`. Conectar la carga del Panel Derecho a `buscar_partidos`.
+4.  **Pruebas Manuales:** Crear un perfil desde la UI y verificar que los partidos sugeridos se filtren correctamente.
+```eof
+
+Este archivo resume a la perfección el modelo de datos, la estructura visual que vimos en la imagen generada y las reglas del algoritmo. Solo tienes que guardar este texto con el nombre `Especificacion_MatchSport.md` en tu carpeta de proyecto en Visual Studio Code.
+
+Si utilizas alguna extensión de IA (como Copilot Chat), puedes simplemente abrir el chat y decirle: *"Basándote en el archivo @Especificacion_MatchSport.md, por favor genérame el código completo para la fase 1 (database.py)"*. 
+
+¿Te gustaría que yo mismo te genere ese primer código de la base de datos aquí mismo para que ya lo tengas listo, o prefieres continuar directamente en Visual Studio Code?

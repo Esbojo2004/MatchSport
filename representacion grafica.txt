@@ -1,0 +1,27 @@
+graph TD
+    %% Estructura de la Base de Datos
+    DB[(Base de Datos Local<br>SQLite)]
+
+    %% Panel de Usuario (Izquierda)
+    subgraph Interfaz - Panel Izquierdo
+        A[Formulario: Datos del Jugador]
+        A1(Nombre, Deporte, Nivel, Zona) --> A
+        A --> B[Botón: Guardar Perfil]
+    end
+
+    %% Motor Lógico (Backend Local)
+    subgraph Lógica de Python
+        B -->|Guarda registro| DB
+        DB -->|Lee preferencias| C{Motor de Emparejamiento}
+        C -->|Filtra: Coincidencia exacta| C1[Filtro: Mismo Deporte]
+        C1 --> C2[Filtro: Mismo Nivel]
+        C2 --> C3[Filtro: Misma Zona]
+    end
+
+    %% Panel de Partidos (Derecha)
+    subgraph Interfaz - Panel Derecho
+        C3 --> D[Pantalla: Partidos Disponibles]
+        D --> E[Lista de Partidos Compatibles]
+        E --> F[Botón: Unirse al partido]
+        F -->|Actualiza plazas| DB
+    end
