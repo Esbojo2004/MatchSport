@@ -29,7 +29,7 @@
 
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/TU_USUARIO/matchsport.git
+   git clone https://github.com/Esbojo2004/matchsport.git
    cd matchsport
    ```
 
@@ -56,3 +56,4 @@ python "aplicacion inventada.py"
 *(O haz doble clic en `iniciar_app.bat`)*
 
 La aplicación detectará automáticamente el servidor en la red local y sincronizará los partidos y perfiles en tiempo real.
+
